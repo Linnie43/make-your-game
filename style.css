@@ -1,73 +1,85 @@
-
 /* grid */
 .container {
-    display: flex;
-  }
-  
-body {
-    background-color: rgb(216, 241, 252);
-    font-family: Arial, sans-serif;
-    display: flex;
-    height: 100vh;
-    margin: 0;
-    /* align items in a column */
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .game {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: rgb(250, 250, 250);
-    border: 2px solid black;
-    padding: 20px;
-  }
-  
-  .score {
-    font-size: 20px;
-    margin-bottom: 20px;
-  }
-  
-  .start-button {
-    font-size: 20px;
-    padding: 10px;
-    background-color: white;
-    border: none;
-    cursor: pointer;
+  display: flex;
 }
-  .grid {
-    width: 200px;
-    height: 400px;
-    display: flex;
-    flex-wrap: wrap;
-    background-color: rgb(255, 255, 255);
-    border-radius: 5px;
-  }
-  
-  .grid div {
-    height: 20px;
-    width: 20px;
-  }
-  
-  .tetromino {
-    display: flex;
-    flex-wrap: wrap;
-    border-radius: 5px;
-  }
-  
-  .mini-grid {
-    margin-left: 50px;
-    width: 80px;
-    height: 80px;
-    display: flex;
-    flex-wrap: wrap;
-    background-color: rgb(255, 255, 255);
-    border-radius: 5px;
-  }
-  
-  .mini-grid div {
-    height: 20px;
-    width: 20px;
-  }
+
+body {
+  background-color: rgb(216, 241, 252);
+  font-family: Arial, sans-serif;
+  display: flex;
+  height: 100vh;
+  margin: 0;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(250, 250, 250);
+  border: 2px solid black;
+  padding: 20px;
+}
+
+.score {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.start-button {
+  font-size: 20px;
+  padding: 10px;
+  background-color: white;
+  border: none;
+  cursor: pointer;
+}
+
+/* Grid container */
+.grid {
+  width: 200px;
+  height: 400px;
+  display: grid;
+  grid-template-columns: repeat(10, 20px);  /* Ensure 10 columns */
+  grid-template-rows: repeat(20, 20px);     /* Ensure 20 rows */
+  background-color: rgb(255, 255, 255);
+  border-radius: 5px;
+  position: relative; /* To prevent overflow */
+}
+
+
+/* Grid cells */
+.grid div {
+  height: 20px;
+  width: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.1); /* Add border to each cell */
+  box-sizing: border-box;
+}
+
+/* Hide any grid cell after the 200th (the extra bottom row) */
+.grid div:nth-child(n+201) {
+  visibility: hidden;
+}
+
+/* Other styles */
+.tetromino {
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 5px;
+}
+
+.mini-grid {
+  margin-left: 50px;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: rgb(255, 255, 255);
+  border-radius: 5px;
+}
+
+.mini-grid div {
+  height: 20px;
+  width: 20px;
+}
