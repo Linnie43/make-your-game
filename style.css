@@ -1,85 +1,148 @@
-/* grid */
+/* Base Styles */
+body {
+  background: #d8f1fc; /* Light blue background */
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+/* Header, Timer & Score */
+#timer,
+h3 {
+  font-size: 1.5rem;
+  margin: 10px;
+  color: #333;
+}
+
+/* Buttons */
+button {
+  font-size: 1rem;
+  padding: 10px 20px;
+  background: #fff;
+  border: 2px solid #333;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #f0f0f0;
+}
+
+/* Container for grid and mini-grid */
 .container {
   display: flex;
+  margin-top: 20px;
 }
 
-body {
-  background-color: rgb(216, 241, 252);
-  font-family: Arial, sans-serif;
-  display: flex;
-  height: 100vh;
-  margin: 0;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.game {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: rgb(250, 250, 250);
-  border: 2px solid black;
-  padding: 20px;
-}
-
-.score {
-  font-size: 20px;
-  margin-bottom: 20px;
-}
-
-.start-button {
-  font-size: 20px;
-  padding: 10px;
-  background-color: white;
-  border: none;
-  cursor: pointer;
-}
-
-/* Grid container */
+/* Main Grid */
 .grid {
   width: 200px;
   height: 400px;
   display: grid;
-  grid-template-columns: repeat(10, 20px);  /* Ensure 10 columns */
-  grid-template-rows: repeat(20, 20px);     /* Ensure 20 rows */
-  background-color: rgb(255, 255, 255);
+  grid-template-columns: repeat(10, 20px);
+  grid-template-rows: repeat(20, 20px);
+  background: #fff;
+  border: 2px solid #333;
   border-radius: 5px;
-  position: relative; /* To prevent overflow */
+  position: relative;
 }
 
-
-/* Grid cells */
+/* Grid Cells */
 .grid div {
-  height: 20px;
   width: 20px;
-  border: 1px solid rgba(0, 0, 0, 0.1); /* Add border to each cell */
+  height: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 }
 
-/* Hide any grid cell after the 200th (the extra bottom row) */
+/* Hide extra grid cells (the bottom "taken" row cells are still visible via their class) */
 .grid div:nth-child(n+201) {
   visibility: hidden;
 }
 
-/* Other styles */
+/* Tetromino cells */
 .tetromino {
-  display: flex;
-  flex-wrap: wrap;
-  border-radius: 5px;
+  border-radius: 3px;
 }
 
+/* Mini-grid (Next Tetromino Preview) */
 .mini-grid {
   margin-left: 50px;
   width: 80px;
   height: 80px;
-  display: flex;
-  flex-wrap: wrap;
-  background-color: rgb(255, 255, 255);
+  display: grid;
+  grid-template-columns: repeat(4, 20px);
+  grid-template-rows: repeat(4, 20px);
+  background: #fff;
+  border: 2px solid #333;
   border-radius: 5px;
 }
 
-.mini-grid div {
-  height: 20px;
-  width: 20px;
+/* Pause Menu Modal */
+#pause-menu {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  z-index: 1000;
+  /* Removed display: none; so that visibility is controlled only by the "hidden" class */
+}
+
+#pause-menu button {
+  margin: 10px;
+  width: 100px;
+}
+
+/* Utility Class to Hide Elements */
+.hidden {
+  display: none !important;
+}
+
+/* Game Over Message Styling */
+/* Game Over Message Styling */
+#game-over {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+  color: red;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 20px 40px;
+  border: 3px solid red;
+  border-radius: 10px;
+  text-align: center;
+  z-index: 2000;
+}
+
+/* Styling for the Restart Button in Game Over */
+#game-over button {
+  font-size: 1.5rem;
+  padding: 10px 20px;
+  margin-top: 20px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#game-over button:hover {
+  background-color: darkred;
+}
+
+/* Utility Class to Hide Elements */
+.hidden {
+  display: none !important;
 }
