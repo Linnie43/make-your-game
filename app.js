@@ -14,7 +14,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const height = 20;
   const totalCells = width * height;
   const miniGridSize = 16; // 4x4 mini grid for next piece preview
-  const colors = ['orange', 'red', 'purple', 'green', 'blue', 'yellow', 'cyan'];
+  const colors = [ '#ecb5ff',
+    '#ffa0ab',
+    '#8cffb4',
+    '#ff8666',
+    '#80c3f5',
+    '#c2e77d',
+    '#fdf9a1',];
   
   let squares = [];
   let score = 0;
@@ -154,12 +160,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===== Game Mechanics =====
-  function moveDown() {
-    undraw();
-    currentPosition += width;
-    draw();
-    freeze();
+function moveDown() {
+  undraw();
+  const newPosition = currentPosition + width;
+  if (!current.some(index => squares[newPosition + index].classList.contains('taken'))) {
+    currentPosition = newPosition;
   }
+  draw();
+  freeze();
+}
 
   function freeze() {
     if (current.some(index => squares[currentPosition + index + width].classList.contains('taken'))) {
@@ -292,18 +301,31 @@ document.addEventListener('DOMContentLoaded', () => {
   // ===== Score & Row Clearing =====
   function addScore() {
     for (let i = 0; i < 199; i += width) {
-      const row = [i, i + 1, i + 2, i + 3, i + 4, i + 5, i + 6, i + 7, i + 8, i + 9];
+      const row = [...Array(width)].map((_, j) => i + j);
       if (row.every(index => squares[index].classList.contains('taken'))) {
         score += 100;
         scoreDisplay.innerHTML = score;
+  
         row.forEach(index => {
-          squares[index].classList.remove('taken');
-          squares[index].classList.remove('tetromino');
+          squares[index].classList.remove('taken', 'tetromino');
           squares[index].style.backgroundColor = '';
         });
-        // Remove the full row and add new cells at the top
-        squares = [...squares.splice(i, width), ...squares];
-        squares.forEach(cell => grid.appendChild(cell));
+  
+        // Move all rows above down by one
+        for (let j = i; j >= width; j -= width) {
+          squares.slice(j - width, j).forEach((cell, k) => {
+            squares[j + k].className = cell.className;
+            squares[j + k].style.backgroundColor = cell.style.backgroundColor;
+          });
+        }
+  
+        // Clear the top row
+        squares.slice(0, width).forEach(cell => {
+          cell.className = '';
+          cell.style.backgroundColor = '';
+        });
+  
+        // Speed up game
         intervalTime = Math.max(intervalTime * speedUpFactor, minInterval);
       }
     }
