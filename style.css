@@ -83,6 +83,11 @@ button:hover {
   border: 2px solid rgba(0, 0, 0, 0.1);
 }
 
+.mini-grid .tetromino {
+  border-radius: 3px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+}
+
 /* Mini-grid (Next Tetromino Preview) */
 .mini-grid {
   width: 120px; 
