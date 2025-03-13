@@ -1,6 +1,6 @@
 /* Base Styles */
 body {
-  background: #d8f1fc; /* Light blue background */
+  background: #d8f1fc; 
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
@@ -9,6 +9,15 @@ body {
   align-items: center;
   justify-content: center;
   height: 100vh;
+}
+
+.game-wrapper {
+  display: flex;
+  align-items: flex-start; /* Align items at the top */
+  justify-content: center; /* Center the whole wrapper */
+  gap: 30px; /* Space between instructions and game container */
+  width: 100%;
+  margin-top: 20px;
 }
 
 /* Header, Timer & Score */
@@ -34,29 +43,31 @@ button:hover {
   background: #f0f0f0;
 }
 
-/* Container for grid and mini-grid */
 .container {
   display: flex;
-  margin-top: 20px;
+  flex-direction: row;
+  align-items:baseline; 
+  justify-content: center; 
+  gap: 20px;
 }
 
 /* Main Grid */
 .grid {
-  width: 200px;
-  height: 400px;
+  width: 300px; /* Total width: 10 columns * 30px (cell width) */
+  height: 600px; /* Total height: 20 rows * 30px (cell height) */
   display: grid;
-  grid-template-columns: repeat(10, 20px);
-  grid-template-rows: repeat(20, 20px);
+  grid-template-columns: repeat(10, 30px); /* 10 columns, 30px per cell */
+  grid-template-rows: repeat(20, 30px); /* 20 rows, 30px per cell */
   background: #fff;
   border: 2px solid #333;
   border-radius: 5px;
   position: relative;
 }
 
-/* Grid Cells */
+/* Scale the Individual Grid Cells */
 .grid div {
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 }
@@ -67,21 +78,28 @@ button:hover {
 }
 
 /* Tetromino cells */
-.tetromino {
+.grid .tetromino { 
   border-radius: 3px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
 }
 
 /* Mini-grid (Next Tetromino Preview) */
 .mini-grid {
-  margin-left: 50px;
-  width: 80px;
-  height: 80px;
+  width: 120px; 
+  height: 120px;
   display: grid;
-  grid-template-columns: repeat(4, 20px);
-  grid-template-rows: repeat(4, 20px);
+  grid-template-columns: repeat(4, 30px); /* 4 columns, 30px per cell */
+  grid-template-rows: repeat(4, 30px); /* 4 rows, 30px per cell */
   background: #fff;
   border: 2px solid #333;
   border-radius: 5px;
+}
+
+.mini-grid div {
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 }
 
 /* Pause Menu Modal */
@@ -90,18 +108,36 @@ button:hover {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.9);
-  color: #fff;
-  padding: 30px;
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+  padding: 40px 60px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   text-align: center;
   z-index: 1000;
-  /* Removed display: none; so that visibility is controlled only by the "hidden" class */
+  width: 200px;  /* Increased width for a more spacious layout */
+  height: 180px;  /* Adjusted height for better balance */
+}
+
+#pause-menu h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;  /* Increased margin to give some space between the title and buttons */
+  color: #333;  /* Text color for the title */
 }
 
 #pause-menu button {
-  margin: 10px;
-  width: 100px;
+  margin: 15px;
+  padding: 15px 25px;  /* Larger buttons for better interaction */
+  font-size: 1.2rem;
+  background: #fff;
+  border: 2px solid #333;
+  border-radius: 8px;  /* Slightly larger border radius */
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+#pause-menu button:hover {
+  background: #f0f0f0;
 }
 
 /* Utility Class to Hide Elements */
@@ -110,39 +146,110 @@ button:hover {
 }
 
 /* Game Over Message Styling */
-/* Game Over Message Styling */
 #game-over {
   position: fixed;
-  top: 40%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 3rem;
-  color: red;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 20px 40px;
-  border: 3px solid red;
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #e32121;
+  padding: 40px 60px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   text-align: center;
-  z-index: 2000;
+  z-index: 1000;
+  width: 200px;  /* Increased width for a more spacious layout */
+  height: 180px;  /* Adjusted height for better balance */
+}
+
+#game-over p {
+  font-size: 2.4rem;
 }
 
 /* Styling for the Restart Button in Game Over */
 #game-over button {
-  font-size: 1.5rem;
-  padding: 10px 20px;
-  margin-top: 20px;
-  background-color: red;
-  color: white;
-  border: none;
-  border-radius: 5px;
+  margin: 15px;
+  padding: 15px 25px;  /* Larger buttons for better interaction */
+  font-size: 1.2rem;
+  background: #fff;
+  border: 2px solid #333;
+  border-radius: 8px;  /* Slightly larger border radius */
   cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
 }
 
 #game-over button:hover {
-  background-color: darkred;
+  background: #f0f0f0;
 }
 
 /* Utility Class to Hide Elements */
 .hidden {
   display: none !important;
+}
+
+.shadow {
+  background-color: rgba(28, 28, 28, 0.3);
+  opacity: 1;
+}
+
+/* Scoreboard Layout */
+.scoreboard {
+  width: 610px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  padding: 10px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+}
+
+#timer, h3 {
+  font-size: 1.2rem;
+  color: #333;
+  margin: 0;
+}
+
+/* Ensure the button aligns well */
+#start-button {
+  flex-shrink: 0;
+}
+
+.instructions {
+  width: 150px;
+  height: 575px;
+  padding: 15px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+  font-size: 1rem;
+  color: #333;
+  text-align: left;
+}
+
+/* Instructions Title */
+.instructions h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  text-align: center;
+  color: #000;
+}
+
+/* Instruction List */
+.instructions ul {
+  list-style: none; /* Removes default bullets */
+  padding: 0;
+}
+
+/* Individual Instruction Items */
+.instructions li {
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+/* Bold key actions */
+.instructions strong {
+  color: #0077cc;
+  font-weight: bold;
 }

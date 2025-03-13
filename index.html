@@ -7,19 +7,32 @@
   <title>Basic Tetris</title>
 </head>
 <body>
-  <div id="timer">Time: 0s</div>
-  <h3>Score: <span id="score">0</span></h3>
-  <button id="start-button">Start/Pause</button>
-
-  <div class="container">
-    <div class="grid"></div>
-    <div class="mini-grid"></div>
+  <div class="scoreboard">
+    <div id="timer">Time: 0s</div>
+    <h3>Score: <span id="score">0</span></h3>
+    <button id="start-button">Start/Pause</button>
+  </div>
+  <div class="game-wrapper">
+    <div class="instructions">
+      <h2>How to Play</h2>
+      <ul>
+        <li><strong>Move:</strong> Use the arrow keys to move left, right, or down.</li>
+        <li><strong>Rotate:</strong> Press the up arrow key to rotate the piece.</li>
+        <li><strong>Drop:</strong> Press <strong>Space</strong> to instantly drop a piece.</li>
+        <li><strong>Clear Rows:</strong> Fill a row completely to remove it and earn points.</li>
+        <li><strong>Game Over:</strong> The game ends when pieces stack to the top.</li>
+        <li><strong>Start/Pause:</strong> Press the start button to begin. Press <strong>Esc</strong> to pause.</li>
+      </ul>
+    </div>
+    <div class="container">
+      <div class="grid"></div>
+      <div class="mini-grid"></div>
+    </div>
   </div>
 
   <div id="pause-menu" class="hidden">
     <button id="resume-button">Resume</button>
     <button id="restart-button">Restart</button>
-    <button id="how-to-button">How to</button>
   </div>  
 
   <!-- New Game Over Message Element -->
