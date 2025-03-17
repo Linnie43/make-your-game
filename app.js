@@ -175,38 +175,39 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-// ===== Shadow Drawing Functions =====
+  // ===== Shadow Drawing Functions =====
 
-let shadowPosition = currentPosition;
+  let shadowPosition = currentPosition;
 
-function clearShadow() {
-  document.querySelectorAll('.shadow').forEach(cell => {
-    cell.classList.remove('shadow');
-  });
-}
-
-function drawShadow() {
-  clearShadow(); // Ensure previous shadow is cleared
-  const shadowTetromino = current.map(index => index + shadowPosition);
-  shadowTetromino.forEach(index => {
-    if (!squares[index].classList.contains('taken')) {
-      squares[index].classList.add('shadow');
-    }
-  });
-}
-
-function updateShadow() {
-  shadowPosition = currentPosition;
-  // Move shadow down until one of the blocks would collide
-  while (!current.some(index => squares[shadowPosition + index + width]?.classList.contains('taken'))) {
-    shadowPosition += width;
+  function clearShadow() {
+    document.querySelectorAll('.shadow').forEach(cell => {
+      cell.classList.remove('shadow');
+    });
   }
-  drawShadow();
-}
+
+  function drawShadow() {
+    clearShadow(); // Ensure previous shadow is cleared
+    const shadowTetromino = current.map(index => index + shadowPosition);
+    shadowTetromino.forEach(index => {
+      if (!squares[index].classList.contains('taken')) {
+        squares[index].classList.add('shadow');
+      }
+    });
+  }
+
+  function updateShadow() {
+    shadowPosition = currentPosition;
+    while (!current.some(index => squares[shadowPosition + index + width]?.classList.contains('taken'))) {
+      shadowPosition += width;
+    }
+    drawShadow();
+  }
 
   // ===== Game Mechanics =====
 
   function hardDrop() {
+    if (paused || gameOverStatus()) return; // Check if the game is over before proceeding
+    
     undraw();
     clearShadow();
     // Move the piece down until a collision is detected
@@ -217,44 +218,74 @@ function updateShadow() {
     freeze(); // Place the tetromino and process the next piece
   }
 
-function moveDown() {
-  undraw();
-  const newPosition = currentPosition + width;
-  if (!current.some(index => squares[newPosition + index].classList.contains('taken'))) {
-    currentPosition = newPosition;
+  function gameOverStatus() {
+    return current.some(index => squares[currentPosition + index].classList.contains('taken'));
   }
-  draw();
-  freeze();
-}
+  
 
-function freeze() {
-  if (current.some(index => squares[currentPosition + index + width].classList.contains('taken'))) {
-    current.forEach(index => squares[currentPosition + index].classList.add('taken'));
-    // Add 10 points for placing the piece
-    score += 10;
-    scoreDisplay.innerHTML = score;
+  function moveDown() {
+    undraw();
+    const newPosition = currentPosition + width;
+    if (!current.some(index => squares[newPosition + index]?.classList.contains('taken'))) {
+      currentPosition = newPosition;
+    }
+    draw();
+    freeze();
+  }
 
-    // Spawn next tetromino
+  let lockDelay = 200; // Time in ms before a piece locks
+  let lockTimer = null;
+
+  function freeze() {
+      if (current.some(index => squares[currentPosition + index + width].classList.contains('taken'))) {
+          
+          // If there's already a lock timer running, return early
+          if (lockTimer) return;
+
+          // Start a lock timer to delay the piece locking
+          lockTimer = setTimeout(() => {
+              current.forEach(index => squares[currentPosition + index].classList.add('taken'));
+
+              // Clear completed rows
+              addScore();
+
+              // Spawn a new piece
+              spawnTetromino();
+
+              // Reset lock timer
+              lockTimer = null;
+          }, lockDelay);
+      }
+  }
+
+  
+  function spawnTetromino() {
     random = nextRandom;
-    nextRandom = Math.floor(Math.random() * theTetrominoes.length);  // update nextRandom first
+    nextRandom = Math.floor(Math.random() * theTetrominoes.length);
     currentRotation = 0;
     current = theTetrominoes[random][currentRotation];
     currentPosition = 4;
+  
     draw();
-    displayShape(); // This will now display the next correct shape in the preview
-    addScore(); // Check for and clear completed rows
-    gameOver(); // Check if game over
+    displayShape();
+    gameOver();
   }
-}
+  
 
   function moveLeft() {
     undraw();
     clearShadow();
     const isAtLeftEdge = current.some(index => (currentPosition + index) % width === 0);
     const isBlocked = current.some(index => squares[currentPosition + index - 1]?.classList.contains('taken'));
+
     if (!isAtLeftEdge && !isBlocked) {
-      currentPosition -= 1;
+        currentPosition -= 1;
+        if (lockTimer) {
+            clearTimeout(lockTimer);
+            lockTimer = null;
+        }
     }
+    
     draw();
     updateShadow();
   }
@@ -264,11 +295,17 @@ function freeze() {
     clearShadow();
     const isAtRightEdge = current.some(index => (currentPosition + index) % width === width - 1);
     const isBlocked = current.some(index => squares[currentPosition + index + 1]?.classList.contains('taken'));
+
     if (!isAtRightEdge && !isBlocked) {
-      currentPosition += 1;
+        currentPosition += 1;
+        if (lockTimer) {
+            clearTimeout(lockTimer);
+            lockTimer = null;
+        }
     }
+    
     draw();
-    updateShadow(); // Recalculate and draw the shadow piece
+    updateShadow();
   }
 
   // Rotation with collision check
@@ -289,12 +326,19 @@ function freeze() {
     undraw();
     clearShadow();
     const nextRotation = (currentRotation + 1) % current.length;
+
     if (isRotationValid(theTetrominoes[random][nextRotation], currentPosition)) {
-      currentRotation = nextRotation;
-      current = theTetrominoes[random][currentRotation];
+        currentRotation = nextRotation;
+        current = theTetrominoes[random][currentRotation];
+
+        if (lockTimer) {
+            clearTimeout(lockTimer);
+            lockTimer = null;
+        }
     }
+    
     draw();
-    updateShadow(); // Ensure the shadow is recalculated for the new rotation
+    updateShadow();
   }
 
   // ===== Input Handling =====
@@ -366,37 +410,42 @@ function freeze() {
 
   // ===== Score & Row Clearing =====
   function addScore() {
+    let rowsCleared = false;
+  
     for (let i = 0; i < 199; i += width) {
       const row = [...Array(width)].map((_, j) => i + j);
+  
       if (row.every(index => squares[index].classList.contains('taken'))) {
+        rowsCleared = true;
+  
         score += 100;
         scoreDisplay.innerHTML = score;
   
+        // Remove row blocks
         row.forEach(index => {
           squares[index].classList.remove('taken', 'tetromino');
           squares[index].style.backgroundColor = '';
         });
   
-        // Move all rows above down by one
+        // Shift everything down properly
         for (let j = i; j >= width; j -= width) {
-          squares.slice(j - width, j).forEach((cell, k) => {
-            squares[j + k].className = cell.className;
-            squares[j + k].style.backgroundColor = cell.style.backgroundColor;
-          });
+          for (let k = 0; k < width; k++) {
+            squares[j + k].className = squares[j - width + k].className;
+            squares[j + k].style.backgroundColor = squares[j - width + k].style.backgroundColor;
+          }
         }
   
-        // Clear the top row
-        squares.slice(0, width).forEach(cell => {
-          cell.className = '';
-          cell.style.backgroundColor = '';
-        });
-  
-        // Speed up game
-        intervalTime = Math.max(intervalTime * speedUpFactor, minInterval);
+        // Ensure top row is cleared to prevent ghost blocks
+        for (let k = 0; k < width; k++) {
+          squares[k].classList.remove('taken', 'tetromino');
+          squares[k].style.backgroundColor = '';
+        }
       }
     }
+  
+    return rowsCleared;
   }
-
+  
   // ===== Game Over =====
   function gameOver() {
     if (current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
@@ -413,18 +462,20 @@ function freeze() {
       requestAnimationFrame(gameLoop);
       return;
     }
-    if (!lastTime) lastTime = timestamp;
+  
     const deltaTime = timestamp - lastTime;
     lastTime = timestamp;
     accumulator += deltaTime;
-
+  
     updatePlayerActions(deltaTime);
+  
     while (accumulator >= intervalTime) {
       moveDown();
       accumulator -= intervalTime;
     }
     requestAnimationFrame(gameLoop);
   }
+  
 
   startBtn.addEventListener('click', () => {
     if (!gameStarted) {
@@ -455,8 +506,10 @@ function freeze() {
 
   document.addEventListener('keydown', (e) => {
     if (e.key === ' ' || e.code === 'Space') {
-      e.preventDefault();
-      hardDrop();
+      e.preventDefault(); // Prevent default spacebar behavior
+      if (gameStarted && !paused) { // Make sure the game is started and not paused
+        hardDrop();
+      }
     }
     
     // Existing key detection logic
