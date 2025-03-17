@@ -41,7 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let gameStarted = false;
   let lastTime = 0;
   let accumulator = 0;
-  let elapsedTime = 0;
+  let elapsedSeconds = 0;
+  let elapsedMinutes = 0;
   let timerInterval = null;
   
   // Attach listener to the Game Over Restart button (changed to use resetGame)
@@ -71,8 +72,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function startTimer() {
     timerInterval = setInterval(() => {
       if (!paused) {
-        elapsedTime++;
-        timerDisplay.textContent = `Time: ${elapsedTime}s`;
+        elapsedSeconds++;
+        if (elapsedSeconds === 60) {
+          elapsedMinutes++;
+          elapsedSeconds = 0;
+        }
+        timerDisplay.textContent = `Time: ${elapsedMinutes}m ${elapsedSeconds}s`;
       }
     }, 1000);
   }
