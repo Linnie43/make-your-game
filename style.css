@@ -145,11 +145,6 @@ button:hover {
   background: #f0f0f0;
 }
 
-/* Utility Class to Hide Elements */
-.hidden {
-  display: none !important;
-}
-
 /* Game Over Message Styling */
 #game-over {
   position: fixed;
@@ -193,9 +188,10 @@ button:hover {
 }
 
 .shadow {
-  background-color: rgba(28, 28, 28, 0.3);
+  background-color: rgba(141, 141, 141, 0.3);
   opacity: 1;
 }
+
 
 /* Scoreboard Layout */
 .scoreboard {

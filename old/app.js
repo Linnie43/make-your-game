@@ -21,20 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
     '#80c3f5',
     '#c2e77d',
     '#fdf9a1',];
-
-    const style = document.createElement('style');
-    style.innerHTML = `
-      .shadow {
-        background-color: rgba(128, 128, 128, 0.5);
-      }
-    `;
-    document.head.appendChild(style);
   
   let squares = [];
   let score = 0;
   let intervalTime = 500; // initial drop interval (ms)
-  const speedUpFactor = 0.95;
-  const minInterval = 150;
+  const speedUpFactor = 0.95; // speed up factor
+  const minInterval = 150; // minimum interval time (ms)
 
   // Game loop and timer state
   let paused = false;
@@ -100,7 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===== Tetromino Definitions =====
-
   const jTetromino = [
     [1, width + 1, width * 2 + 1, 2],
     [width, width + 1, width + 2, width * 2 + 2],
@@ -176,7 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===== Shadow Drawing Functions =====
-
   let shadowPosition = currentPosition;
 
   function clearShadow() {
@@ -204,7 +194,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===== Game Mechanics =====
-
   function hardDrop() {
     if (paused || gameOverStatus()) return; // Check if the game is over before proceeding
     
@@ -215,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
       currentPosition += width;
     }
     draw();
-    freeze(); // Place the tetromino and process the next piece
+    freeze();
   }
 
   function gameOverStatus() {
@@ -237,27 +226,26 @@ document.addEventListener('DOMContentLoaded', () => {
   let lockTimer = null;
 
   function freeze() {
-      if (current.some(index => squares[currentPosition + index + width].classList.contains('taken'))) {
-          
-          // If there's already a lock timer running, return early
-          if (lockTimer) return;
+    if (current.some(index => squares[currentPosition + index + width].classList.contains('taken'))) {
+        
+        // If there's already a lock timer running, return early
+        if (lockTimer) return;
 
-          // Start a lock timer to delay the piece locking
-          lockTimer = setTimeout(() => {
-              current.forEach(index => squares[currentPosition + index].classList.add('taken'));
+        // Start a lock timer to delay the piece locking
+        lockTimer = setTimeout(() => {
+            current.forEach(index => squares[currentPosition + index].classList.add('taken'));
 
-              // Clear completed rows
-              addScore();
+            score += 10;
+            scoreDisplay.textContent = `Score: ${score}`;
 
-              // Spawn a new piece
-              spawnTetromino();
+            addScore();
+            spawnTetromino();
 
-              // Reset lock timer
-              lockTimer = null;
-          }, lockDelay);
-      }
-  }
-
+            // Reset lock timer
+            lockTimer = null;
+        }, lockDelay);
+    }
+}
   
   function spawnTetromino() {
     random = nextRandom;
@@ -392,8 +380,8 @@ document.addEventListener('DOMContentLoaded', () => {
   ];  
 
   function displayShape() {
-    // Get the next tetromino for the preview from the hardcoded shapes
-    const nextTetromino = upNextTetrominoes[nextRandom]; // Use the hardcoded shapes
+    // Get the next tetromino for the preview from the shapes
+    const nextTetromino = upNextTetrominoes[nextRandom];
     
     // Clear the mini grid
     displaySquares.forEach(square => {
@@ -421,13 +409,11 @@ document.addEventListener('DOMContentLoaded', () => {
         score += 100;
         scoreDisplay.innerHTML = score;
   
-        // Remove row blocks
         row.forEach(index => {
           squares[index].classList.remove('taken', 'tetromino');
           squares[index].style.backgroundColor = '';
         });
   
-        // Shift everything down properly
         for (let j = i; j >= width; j -= width) {
           for (let k = 0; k < width; k++) {
             squares[j + k].className = squares[j - width + k].className;
@@ -440,6 +426,9 @@ document.addEventListener('DOMContentLoaded', () => {
           squares[k].classList.remove('taken', 'tetromino');
           squares[k].style.backgroundColor = '';
         }
+  
+        // Speed up the game
+        intervalTime = Math.max(intervalTime * speedUpFactor, minInterval);
       }
     }
   
@@ -483,10 +472,8 @@ document.addEventListener('DOMContentLoaded', () => {
       paused = false;
       lastTime = performance.now();
       startTimer();
-      // Draw the first tetromino and update its shadow…
       draw();
       updateShadow();
-      // And immediately update the mini-grid preview
       displayShape();
       requestAnimationFrame(gameLoop);
     } else {
