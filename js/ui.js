@@ -62,16 +62,15 @@ export function setupTimer(timerDisplay) {
     };
     
     document.addEventListener('keydown', (e) => {
-      // Skip inputs if game is over or paused
-      if (game.gameOver || game.paused) return;
-      
-      if (e.key === 'ArrowUp' && !keysPressed[e.key]) {
+      if (e.key === 'ArrowUp' && !keysPressed[e.key] && game.gameStarted) {
         game.rotate();
-      } else if ((e.key === ' ' || e.code === 'Space') && game.gameStarted) {
+      }
+      if ((e.key === ' ' || e.code === 'Space') && game.gameStarted) {
         e.preventDefault();
         game.hardDrop();
       }
       keysPressed[e.key] = true;
+      
     });
     
     document.addEventListener('keyup', (e) => {
