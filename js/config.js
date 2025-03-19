@@ -11,7 +11,6 @@ export const config = {
     initialInterval: 500,    // Starting drop speed (ms)
     speedUpFactor: 0.97,     // How much to speed up after line clear
     minInterval: 150,        // Fastest possible drop speed (ms)
-    lockDelay: 200,          // Time before piece locks in place
     
     // Input settings
     keyRepeatDelays: { 

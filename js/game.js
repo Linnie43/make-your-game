@@ -181,20 +181,18 @@ export class TetrisGame {
       // If there's already a lock timer running, return early
       if (this.lockTimer) return;
       
-      // Start a lock timer to delay the piece locking
-      this.lockTimer = setTimeout(() => {
-        this.current.forEach(index => 
-          this.squares[this.currentPosition + index].classList.add('taken'));
-        
-        this.score += 10;
-        this.elements.scoreDisplay.textContent = `${this.score}`;
-        
-        this.addScore();
-        this.spawnTetromino();
-        
-        // Reset lock timer
-        this.lockTimer = null;
-      }, config.lockDelay);
+      this.current.forEach(index => 
+        this.squares[this.currentPosition + index].classList.add('taken'));
+      
+      this.score += 10;
+      this.elements.scoreDisplay.textContent = `${this.score}`;
+      
+      this.addScore();
+      this.spawnTetromino();
+      
+      // Reset lock timer
+      this.lockTimer = null;
+      
     }
   }
   
