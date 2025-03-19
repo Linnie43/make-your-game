@@ -1,6 +1,10 @@
 /* Base Styles */
 body {
   background: #d8f1fc; 
+  background-image: url("images/characters.png");
+  background-size: cover; /* Cover the entire viewport */
+  background-repeat: no-repeat; /* Prevent repeating the image */
+  background-position: center; /* Center the image */
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
