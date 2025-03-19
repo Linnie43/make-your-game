@@ -9,7 +9,7 @@ export const config = {
     
     // Game mechanics
     initialInterval: 500,    // Starting drop speed (ms)
-    speedUpFactor: 0.95,     // How much to speed up after line clear
+    speedUpFactor: 0.97,     // How much to speed up after line clear
     minInterval: 150,        // Fastest possible drop speed (ms)
     lockDelay: 200,          // Time before piece locks in place
     

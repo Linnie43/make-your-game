@@ -187,7 +187,7 @@ export class TetrisGame {
           this.squares[this.currentPosition + index].classList.add('taken'));
         
         this.score += 10;
-        this.elements.scoreDisplay.textContent = `Score: ${this.score}`;
+        this.elements.scoreDisplay.textContent = `${this.score}`;
         
         this.addScore();
         this.spawnTetromino();
