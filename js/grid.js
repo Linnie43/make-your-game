@@ -1,13 +1,13 @@
 import { config } from './config.js';
 
 export function createGameGrids(grid, miniGrid) {
-  // Create main grid cells
+  // creates main game grid
   for (let i = 0; i < config.totalCells; i++) {
     const cell = document.createElement('div');
     grid.appendChild(cell);
   }
   
-  // Create the "taken" row at the bottom
+  // create the "taken" row at the bottom
   for (let i = 0; i < config.width; i++) {
     const takenCell = document.createElement('div');
     takenCell.classList.add('taken');
@@ -25,7 +25,7 @@ export function createGameGrids(grid, miniGrid) {
 }
 
 export function displayNextShape(displaySquares, nextRandom, colors) {
-  // Import done within the function to avoid circular dependencies
+  // import tetrominoes asyncronously, execute function when import is complete
   import('./tetromino.js').then(({ previewTetrominoes }) => {
     // Clear the mini grid
     displaySquares.forEach(square => {
@@ -45,8 +45,10 @@ export function displayNextShape(displaySquares, nextRandom, colors) {
 export function clearRow(squares, score, scoreDisplay) {
   let rowsCleared = false;
   let newScore = score;
-  
+
+  // Check each row for completion
   for (let i = 0; i < 199; i += config.width) {
+    // row is an array of indices for the current row (ie, 0-9, 10-19, etc.)
     const row = [...Array(config.width)].map((_, j) => i + j);
     
     if (row.every(index => squares[index].classList.contains('taken'))) {
@@ -60,17 +62,12 @@ export function clearRow(squares, score, scoreDisplay) {
         squares[index].style.backgroundColor = '';
       });
       
+      // shift down all remaining rows above the cleared row
       for (let j = i; j >= config.width; j -= config.width) {
         for (let k = 0; k < config.width; k++) {
           squares[j + k].className = squares[j - config.width + k].className;
           squares[j + k].style.backgroundColor = squares[j - config.width + k].style.backgroundColor;
         }
-      }
-      
-      // Ensure top row is cleared to prevent ghost blocks
-      for (let k = 0; k < config.width; k++) {
-        squares[k].classList.remove('taken', 'tetromino');
-        squares[k].style.backgroundColor = '';
       }
     }
   }

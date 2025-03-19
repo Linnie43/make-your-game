@@ -2,9 +2,10 @@ import { config } from './config.js';
 import { createGameGrids } from './grid.js';
 import { TetrisGame } from './game.js';
 import { setupTimer, setupInputHandlers } from './ui.js';
+import { displayNextShape } from './grid.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // DOM element references
+  // DOM element references (html)
   const elements = {
     grid: document.querySelector('.grid'),
     miniGrid: document.querySelector('.mini-grid'),
@@ -20,56 +21,55 @@ document.addEventListener('DOMContentLoaded', () => {
   const squares = createGameGrids(elements.grid, elements.miniGrid);
   
   // Initialize the game
-  const game = new TetrisGame(elements);
-  game.config = config; // Attach config to game for use in input handler
-  game.initializeGame(squares);
+  const game = new TetrisGame(elements, squares); // new TetrisGame instance with the DOM elements
+  game.config = config;
   
-  // Set up timer
+  // initialize timer and input handlers
   const timer = setupTimer(elements.timerDisplay);
-  
-  // Set up input handlers
   const updateInputs = setupInputHandlers(game);
   
   // Listen for game over event to stop timer
   document.addEventListener('tetris-game-over', () => {
-    timer.stop(); // Stop the timer when game is over
+    timer.stop();
   });
   
-  // Centralized function to handle pause/resume state
+  // handle pause states
   function togglePauseState() {
     game.togglePause();
     if (game.paused) {
       timer.pause();
     } else {
       timer.resume();
-      requestAnimationFrame(timestamp => game.gameLoop(timestamp, updateInputs));
+      requestAnimationFrame(timestamp => game.gameLoop(timestamp, updateInputs)); // resume game loop with current timestamp from requestAnimationFrame
     }
   }
   
   // Start/Pause button event listener
   elements.startBtn.addEventListener('click', () => {
+    // first time starting the game
     if (!game.gameStarted) {
-      // First time starting the game
       game.gameStarted = true;
       game.paused = false;
-      game.lastTime = performance.now();
+      game.lastTime = performance.now(); // track elapsed time for game loop
       timer.start();
       game.draw();
       game.updateShadow();
-      displayNextShape();
-      requestAnimationFrame(timestamp => game.gameLoop(timestamp, updateInputs));
+      displayNextShape(Array.from(document.querySelectorAll('.mini-grid div')), game.nextRandom, config.colors);
+      requestAnimationFrame(timestamp => game.gameLoop(timestamp, updateInputs)); // Start the game loop with current timestamp (gameLoop will call itself by requestAnimationFrame)
     } else if (!game.gameOver) { // Only toggle pause if not game over
-      // Toggle pause state
       togglePauseState();
     }
   });
   
-  // Escape key listener - THE ONLY ESC KEY HANDLER
+  // Escape key listener (pause)
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && game.gameStarted && !game.gameOver) {
       togglePauseState();
     }
   });
+
+  // Game over event listener to show game over menu
+  document.getElementById('game-over-restart').addEventListener('click', () => game.resetGame());
   
   // Resume button listener
   elements.resumeBtn.addEventListener('click', () => {
@@ -82,15 +82,4 @@ document.addEventListener('DOMContentLoaded', () => {
   elements.restartBtn.addEventListener('click', () => {
     game.resetGame();
   });
-  
-  // Helper function to display the next shape
-  function displayNextShape() {
-    import('./grid.js').then(({ displayNextShape }) => {
-      displayNextShape(
-        Array.from(document.querySelectorAll('.mini-grid div')),
-        game.nextRandom,
-        config.colors
-      );
-    });
-  }
 });

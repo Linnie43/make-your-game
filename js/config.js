@@ -1,25 +1,23 @@
-// Game settings and constants
 export const config = {
     // Grid dimensions
     width: 10,
     height: 20,
-    get totalCells() { return this.width * this.height; },
+    get totalCells() { return this.width * this.height; }, // total number of cells, calculate dynamically
     miniGridSize: 16,
     displayWidth: 4,
+ 
+    initialInterval: 500, // Starting drop speed
+    speedUpFactor: 0.97, // Speed up by line clear
+    minInterval: 150, // Fastest drop speed
     
-    // Game mechanics
-    initialInterval: 500,    // Starting drop speed (ms)
-    speedUpFactor: 0.97,     // How much to speed up after line clear
-    minInterval: 150,        // Fastest possible drop speed (ms)
-    
-    // Input settings
-    keyRepeatDelays: { 
+    // Input
+    keyRepeatDelays: { // Delays for key repeat actions
       'ArrowLeft': 150, 
       'ArrowRight': 150, 
       'ArrowDown': 50 
     },
     
-    // Colors for tetrominoes
+    // Colors
     colors: [
       '#ecb5ff', // Purple
       '#ffa0ab', // Pink
