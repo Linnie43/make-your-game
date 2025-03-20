@@ -52,17 +52,17 @@ export function setupTimer(timerDisplay) {
   }
   
   export function setupInputHandlers(game) {
-    const keysPressed = {}; // keep track of pressed keys
-    const { keyRepeatDelays } = game.config; // get key repeat delays from game config
+    const keysPressed = {}; // Keep track of pressed keys
+    const { keyRepeatDelays } = game.config; // Get key repeat delays from game config
     
-    const keyAccumulators = { // keeps track of accumulated time for each key press
+    const keyAccumulators = { // Keeps track of accumulated time for each key press
       'ArrowLeft': keyRepeatDelays['ArrowLeft'],
       'ArrowRight': keyRepeatDelays['ArrowRight'],
       'ArrowDown': keyRepeatDelays['ArrowDown']
     };
     
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowUp' && !keysPressed[e.key] && game.gameStarted) {
+      if (e.key === 'ArrowUp' && !keysPressed[e.key] && game.gameStarted && !game.paused) {
         game.rotate();
       }
       if ((e.key === ' ' || e.code === 'Space') && game.gameStarted) {
@@ -80,8 +80,7 @@ export function setupTimer(timerDisplay) {
       }
     });
     
-    return function updatePlayerActions(deltaTime) { // delta time is the time since the last frame, making it independent of frame rate
-      // Skip input processing if game is over or paused
+    return function updatePlayerActions(deltaTime) { // Delta time is the time since the last frame
       if (game.gameOver || game.paused) return;
       
       ['ArrowLeft', 'ArrowRight', 'ArrowDown'].forEach(key => {

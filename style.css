@@ -1,10 +1,5 @@
-/* Base Styles */
 body {
-  background: #d8f1fc; 
-  background-image: url("images/characters.png");
-  background-size: cover; /* Cover the entire viewport */
-  background-repeat: no-repeat; /* Prevent repeating the image */
-  background-position: center; /* Center the image */
+  position: relative; /* So that "body before" gets positioned correctly */
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
@@ -13,13 +8,29 @@ body {
   align-items: center;
   justify-content: center;
   height: 100vh;
+  overflow: hidden;
+}
+/* before creates a pseudo layer */
+body::before { 
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("field.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  filter: blur(8px);
+  z-index: -1; /* Place it behind the content */
 }
 
 .game-wrapper {
   display: flex;
-  align-items: flex-start; /* Align items at the top */
-  justify-content: center; /* Center the whole wrapper */
-  gap: 30px; /* Space between instructions and game container */
+  align-items: flex-start;
+  justify-content: center;
+  gap: 30px;
   width: 100%;
   margin-top: 20px;
 }
@@ -111,7 +122,7 @@ button:hover {
   box-sizing: border-box;
 }
 
-/* Pause Menu Modal */
+/* Pause Menu */
 #pause-menu {
   position: fixed;
   top: 50%;
@@ -124,23 +135,23 @@ button:hover {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   text-align: center;
   z-index: 1000;
-  width: 200px;  /* Increased width for a more spacious layout */
-  height: 180px;  /* Adjusted height for better balance */
+  width: 200px;
+  height: 180px;
 }
 
 #pause-menu h2 {
   font-size: 2rem;
-  margin-bottom: 20px;  /* Increased margin to give some space between the title and buttons */
-  color: #333;  /* Text color for the title */
+  margin-bottom: 20px;
+  color: #333;
 }
 
 #pause-menu button {
   margin: 15px;
-  padding: 15px 25px;  /* Larger buttons for better interaction */
+  padding: 15px 25px;
   font-size: 1.2rem;
   background: #fff;
   border: 2px solid #333;
-  border-radius: 8px;  /* Slightly larger border radius */
+  border-radius: 8px;
   cursor: pointer;
   transition: background 0.3s, transform 0.2s;
 }
@@ -156,14 +167,14 @@ button:hover {
   left: 50%;
   transform: translate(-50%, -50%);
   background: rgba(255, 255, 255, 0.95);
-  color: #e32121;
+  color: #ed5c82;
   padding: 40px 60px;
   border-radius: 12px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   text-align: center;
   z-index: 1000;
-  width: 200px;  /* Increased width for a more spacious layout */
-  height: 180px;  /* Adjusted height for better balance */
+  width: 200px;
+  height: 180px;
 }
 
 #game-over p {
@@ -173,11 +184,11 @@ button:hover {
 /* Styling for the Restart Button in Game Over */
 #game-over button {
   margin: 15px;
-  padding: 15px 25px;  /* Larger buttons for better interaction */
+  padding: 15px 25px;
   font-size: 1.2rem;
   background: #fff;
   border: 2px solid #333;
-  border-radius: 8px;  /* Slightly larger border radius */
+  border-radius: 8px;
   cursor: pointer;
   transition: background 0.3s, transform 0.2s;
 }
@@ -216,11 +227,6 @@ button:hover {
   margin: 0;
 }
 
-/* Ensure the button aligns well */
-#start-button {
-  flex-shrink: 0;
-}
-
 .instructions {
   width: 150px;
   height: 575px;
@@ -233,7 +239,6 @@ button:hover {
   text-align: left;
 }
 
-/* Instructions Title */
 .instructions h2 {
   font-size: 1.5rem;
   margin-bottom: 10px;
@@ -241,20 +246,17 @@ button:hover {
   color: #000;
 }
 
-/* Instruction List */
 .instructions ul {
   list-style: none; /* Removes default bullets */
   padding: 0;
 }
 
-/* Individual Instruction Items */
 .instructions li {
   margin-bottom: 10px;
   line-height: 1.4;
 }
 
-/* Bold key actions */
 .instructions strong {
-  color: #0077cc;
+  color: #ed5c82;
   font-weight: bold;
 }

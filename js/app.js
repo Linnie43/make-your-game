@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const game = new TetrisGame(elements, squares); // new TetrisGame instance with the DOM elements
   game.config = config;
   
-  // initialize timer and input handlers
+  // Initialize timer and input handlers
   const timer = setupTimer(elements.timerDisplay);
   const updateInputs = setupInputHandlers(game);
   
@@ -33,30 +33,29 @@ document.addEventListener('DOMContentLoaded', () => {
     timer.stop();
   });
   
-  // handle pause states
+  // Handle pause states
   function togglePauseState() {
     game.togglePause();
     if (game.paused) {
       timer.pause();
     } else {
       timer.resume();
-      requestAnimationFrame(timestamp => game.gameLoop(timestamp, updateInputs)); // resume game loop with current timestamp from requestAnimationFrame
+      requestAnimationFrame(timestamp => game.gameLoop(timestamp, updateInputs)); // Resume game loop with current timestamp from requestAnimationFrame
     }
   }
   
   // Start/Pause button event listener
   elements.startBtn.addEventListener('click', () => {
-    // first time starting the game
     if (!game.gameStarted) {
       game.gameStarted = true;
       game.paused = false;
-      game.lastTime = performance.now(); // track elapsed time for game loop
+      game.lastTime = performance.now(); // Track elapsed time for game loop
       timer.start();
       game.draw();
       game.updateShadow();
       displayNextShape(Array.from(document.querySelectorAll('.mini-grid div')), game.nextRandom, config.colors);
       requestAnimationFrame(timestamp => game.gameLoop(timestamp, updateInputs)); // Start the game loop with current timestamp (gameLoop will call itself by requestAnimationFrame)
-    } else if (!game.gameOver) { // Only toggle pause if not game over
+    } else if (!game.gameOver) {
       togglePauseState();
     }
   });

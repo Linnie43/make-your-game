@@ -2,7 +2,7 @@ export const config = {
     // Grid dimensions
     width: 10,
     height: 20,
-    get totalCells() { return this.width * this.height; }, // total number of cells, calculate dynamically
+    get totalCells() { return this.width * this.height; },
     miniGridSize: 16,
     displayWidth: 4,
  

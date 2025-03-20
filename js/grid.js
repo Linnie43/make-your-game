@@ -1,31 +1,28 @@
 import { config } from './config.js';
 
 export function createGameGrids(grid, miniGrid) {
-  // creates main game grid
   for (let i = 0; i < config.totalCells; i++) {
     const cell = document.createElement('div');
     grid.appendChild(cell);
   }
   
-  // create the "taken" row at the bottom
+  // Create the "taken" row at the bottom
   for (let i = 0; i < config.width; i++) {
     const takenCell = document.createElement('div');
     takenCell.classList.add('taken');
     grid.appendChild(takenCell);
   }
-  
-  // Create mini-grid for next tetromino preview
+
   for (let i = 0; i < config.miniGridSize; i++) {
     const miniCell = document.createElement('div');
     miniGrid.appendChild(miniCell);
   }
   
-  // Return all grid cells as an array
   return Array.from(document.querySelectorAll('.grid div'));
 }
 
 export function displayNextShape(displaySquares, nextRandom, colors) {
-  // import tetrominoes asyncronously, execute function when import is complete
+  // Executes when import is done
   import('./tetromino.js').then(({ previewTetrominoes }) => {
     // Clear the mini grid
     displaySquares.forEach(square => {
@@ -48,7 +45,7 @@ export function clearRow(squares, score, scoreDisplay) {
 
   // Check each row for completion
   for (let i = 0; i < 199; i += config.width) {
-    // row is an array of indices for the current row (ie, 0-9, 10-19, etc.)
+    // Row is an array of indices for the current row (ie, 0-9, 10-19, etc.)
     const row = [...Array(config.width)].map((_, j) => i + j);
     
     if (row.every(index => squares[index].classList.contains('taken'))) {
@@ -62,7 +59,7 @@ export function clearRow(squares, score, scoreDisplay) {
         squares[index].style.backgroundColor = '';
       });
       
-      // shift down all remaining rows above the cleared row
+      // Shift down all remaining rows above the cleared row
       for (let j = i; j >= config.width; j -= config.width) {
         for (let k = 0; k < config.width; k++) {
           squares[j + k].className = squares[j - config.width + k].className;
